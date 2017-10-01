@@ -1,0 +1,57 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 1, 2017, 6:15:53 PM
+    Author     : Elmar H.Mammadov <jrelmarmammadov@gmail.com>
+*/
+
+.login-panel{
+    padding: 10px;
+    border-radius: 4px;
+}
+.login-panel tr{
+    padding: 4px;
+    margin: 4px;
+}
+.login-panel tr td{
+    padding: 4px;
+    margin: 4px;
+}
+.login-panel h1 {
+    color: blue;
+}
+.login-label{
+    font-weight: 600;
+    font-family: sans-serif;
+    font-size: 14px;
+    color:blue;
+}
+.login-input{
+    padding: 6px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid blue;
+    background-color: transparent;
+    width: 200px;
+}
+.login-link{
+    font-weight: 400;
+    font-family: sans-serif;
+    font-size: 16px;
+    text-decoration: none;
+}
+.login-btn{
+    float: right;
+    width: 100px;
+    background-color: blue;
+    padding: 4px;
+    outline: none;
+    border: 1px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 2px;
+}

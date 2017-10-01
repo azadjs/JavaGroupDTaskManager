@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Task Manager</title>
+        <link href="resources/css/login.css" type="text/css" rel="stylesheet" />
+    </h:head>
+    <h:body>
+        <center>
+            <h:form>
+                <h:panelGrid class="login-panel" columns="2">
+                    <f:facet name="header">
+                        <b><i><h1>Login to task manager</h1></i></b>
+                    </f:facet>
+                    <h:outputLabel class="login-label" value="Username" />
+                    <h:inputText class="login-input" />
+                    <h:outputLabel class="login-label" value="Password" />
+                    <h:inputSecret class="login-input" />
+                    <h:commandLink class="login-link" value="Register" />
+                    <h:commandButton class="login-btn" action="secured/home.xhtml?faces-redirect=true" value="Login" />
+                </h:panelGrid>
+            </h:form>
+        </center>
+    </h:body>
+</html>
+
