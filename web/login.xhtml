@@ -6,23 +6,32 @@
     <h:head>
         <title>Task Manager</title>
         <link href="resources/css/login.css" type="text/css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     </h:head>
     <h:body>
-        <center>
-            <h:form>
-                <h:panelGrid class="login-panel" columns="2">
-                    <f:facet name="header">
-                        <b><i><h1>Login to task manager</h1></i></b>
-                    </f:facet>
-                    <h:outputLabel class="login-label" value="Username" />
-                    <h:inputText class="login-input" />
-                    <h:outputLabel class="login-label" value="Password" />
-                    <h:inputSecret class="login-input" />
-                    <h:commandLink class="login-link" value="Register" />
-                    <h:commandButton class="login-btn" action="secured/home.xhtml?faces-redirect=true" value="Login" />
-                </h:panelGrid>
-            </h:form>
-        </center>
+        <div class="container-fluid">
+            <center>
+                <h:form>
+                    <h:panelGrid class="login-panel" columns="2">
+                        <f:facet name="header">
+                            <b><i><h1>Login to task manager</h1></i></b>
+                        </f:facet>
+                        <h:outputLabel class="login-label" value="Username" />
+                        <h:inputText class="login-input form-control"  
+                                     value="#{login.username}"
+                                     required="true" requiredMessage="Username must be filled"/>
+                        <h:outputLabel class="login-label" value="Password" />
+                        <h:inputSecret class="login-input form-control" 
+                                       value="#{login.password}"
+                                       required="true" requiredMessage="Password must be filled" />
+                        <h:commandLink class="login-link" value="Register" />
+                        <h:commandButton class="login-btn btn btn-info" 
+                                         action="#{login.login()}" value="Login" />
+                    </h:panelGrid>
+                    <h:messages  errorClass="login-err-msg" />
+                </h:form>
+            </center>
+        </div>
     </h:body>
 </html>
 

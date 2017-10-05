@@ -55,3 +55,10 @@ and open the template in the editor.
     font-weight: bold;
     border-radius: 2px;
 }
+.login-err-msg{
+    font-family: Arial;
+    font-size: 18px;
+    color:red;
+    list-style: none;
+}
+
