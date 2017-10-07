@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Home</title>
         <link rel="stylesheet" type="text/css" href="../resources/css/home.css" />
@@ -10,37 +12,64 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script>
+            function openModal() {
+                document.getElementById('modal-trigger').click();
+            }
+            function openCreateTaskModal(){
+                document.getElementById('open-create-task-modal').click();
+            }
+        </script>
         <style>
-            /* Remove the navbar's default margin-bottom and rounded borders */ 
             .navbar {
                 margin-bottom: 0;
                 border-radius: 0;
             }
-
-            /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
             .row.content {height: 450px}
-
-            /* Set gray background color and 100% height */
             .sidenav {
                 padding-top: 20px;
                 background-color: #f1f1f1;
                 height: 100%;
             }
-
-            /* Set black background color, white text and some padding */
             footer {
                 background-color: #555;
                 color: white;
                 padding: 15px;
             }
-
-            /* On small screens, set height to 'auto' for sidenav and grid */
             @media screen and (max-width: 767px) {
                 .sidenav {
                     height: auto;
                     padding: 15px;
                 }
                 .row.content {height:auto;} 
+            }
+            .list-group-item{
+                margin-bottom: 4px;
+            }
+            .list-group-item a{
+                display: block;
+                text-decoration: none;
+                color: #00BFFF;
+                font-size: 16px;
+                font-family: sans-serif;
+            }
+            .active-left-menu-item{
+                border: 1px solid #00BFFF !important;
+            }
+            .search-box{
+                width: 300px!important;
+                margin-left: 100px;
+            }
+            .modal-backdrop {
+                display:none !important;
+            }
+            .modal-open .modal {
+                width: 600px !important;
+                margin: 100px auto !important;
+            }
+            .custom-input{
+                max-width: 300px!important;
+                margin: 4px;
             }
         </style>
     </h:head>
@@ -53,16 +82,22 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>                        
                     </button>
-                    <a class="navbar-brand" href="#">Logo</a>
+                    <a class="navbar-brand" href="#">Task Manager</a>
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
+                        <li class="active"><a href="#" onclick="openCreateTaskModal()" >Create new Task</a></li>
                         <li><a href="#">About</a></li>
-                        <li><a href="#">Projects</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li>
+                            <form class="navbar-form navbar-left" role="search">
+                                <div class="form-group">
+                                    <input type="text" class="form-control search-box" placeholder="Search Tasks" onfocus="openModal()"/>
+                                </div>
+                            </form>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+
                         <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                     </ul>
                 </div>
@@ -72,14 +107,94 @@
         <div class="container-fluid text-center">    
             <div class="row content">
                 <div class="col-sm-2 sidenav">
-                    <p><a href="#">Link</a></p>
-                    <p><a href="#">Link</a></p>
-                    <p><a href="#">Link</a></p>
+                    <h:form>
+                        <ul class="list-group">
+                            <li class="list-group-item active-left-menu-item">
+                                <span class="badge">14</span>
+                                <h:commandLink value="Notifications" />
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge">14</span>
+                                <h:commandLink value="My Tasks" />
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge">14</span>
+                                <h:commandLink value="Assigned Task" />
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge">14</span>
+                                <h:commandLink value="My Employees" />
+                            </li>
+                        </ul>
+                    </h:form>
                 </div>
                 <div class="col-sm-8 text-left"> 
-                    Tasks
+                    <h:panelGroup id="main-content">
+                        <ui:include src="notifications.xhtml" />
+                        <ui:include src="mytasks.xhtml" />
+                        <ui:include src="assignedtasks.xhtml" />
+                        <ui:include src="employees.xhtml" />
+                    </h:panelGroup>
                 </div>
             </div>
+        </div>
+
+
+
+        <!-- Modal sections -->
+        <button type="button" id="modal-trigger" style="display: none" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+        <div class="modal fade" id="myModal" role="dialog" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Tasks search result</h4>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <button type="button" id="open-create-task-modal" style="display: none" class="btn btn-info btn-lg" data-toggle="modal" data-target="#create-task-modal">Open Modal</button>
+        <div class="modal fade" id="create-task-modal" role="dialog" data-keyboard="false" data-backdrop="static">
+            <h:form>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Create new Task</h4>
+                        </div>
+                        <div class="modal-body">
+                            <h:panelGrid  class="custom-table" columns="2" style="width: 100%;">
+                                <h:outputLabel value="Title" />
+                                <h:inputText  class="form-control custom-input"
+                                              required="true" requiredMessage="Title must be specified"/>
+                                <h:outputLabel value="Description" />
+                                <h:inputTextarea style="max-height:65px" class="form-control custom-input"
+                                                 required="true" requiredMessage="Description must be specified"/>
+                                <h:outputLabel value="Deadline" />
+                                <h:inputText class="form-control custom-input"
+                                             required="true" requiredMessage="Deadline must be specified"/>
+                                <h:outputLabel value="Responsibles" />
+                                <h:selectManyListbox class="form-control custom-input">
+                                    <f:selectItem itemLabel="Yaqubxan" />
+                                    <f:selectItem itemLabel="Azad" />
+                                </h:selectManyListbox>
+                            </h:panelGrid>
+                        </div>
+                        <div class="modal-footer">
+                            <h:messages />
+                            <h:commandButton value="Save" class="btn btn-info">
+                                <f:ajax execute="@form" render="@form" />
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </div>
+            </h:form>
         </div>
     </h:body>
 </html>

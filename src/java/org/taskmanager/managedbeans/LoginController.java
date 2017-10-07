@@ -26,7 +26,7 @@ public class LoginController {
     
     public String login() {
         if ("Elmar".equals(username) && "test".equals(password)) {
-            return "/secured/home.xhtml";
+            return "/secured/home.xhtml?faces-redirect=true";
         } else {
             messageController.showMessage("Username or Password is incorrect", FacesMessage.SEVERITY_ERROR);
             return "login.xhtml";
