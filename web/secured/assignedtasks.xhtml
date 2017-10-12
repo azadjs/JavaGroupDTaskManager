@@ -8,7 +8,9 @@
     </h:head>
     <h:body>
         <ui:composition>
-            Hello from assigned tasks
+            <h:panelGroup rendered="#{mc.currentMenu eq 'ASSIGNED_TASKS'}">
+                Hello from assigned task
+            </h:panelGroup>
         </ui:composition>
     </h:body>
 </html>
