@@ -1,8 +1,9 @@
-/build/
+build/
 
 *.class
 
-/nbprojects
+nbprojects
+
 
 build.xml
 /dist/
