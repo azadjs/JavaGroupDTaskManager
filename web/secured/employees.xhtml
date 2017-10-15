@@ -8,7 +8,9 @@
     </h:head>
     <h:body>
         <ui:composition>
-            Hello from employees
+            <h:panelGroup rendered="#{mc.currentMenu eq 'MY_EMPLOYEES'}">
+                Hello from employees
+            </h:panelGroup>
         </ui:composition>
     </h:body>
 </html>

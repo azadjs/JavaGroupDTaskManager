@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
         <title>Home</title>
         <link rel="stylesheet" type="text/css" href="../resources/css/home.css" />
@@ -16,7 +17,7 @@
             function openModal() {
                 document.getElementById('modal-trigger').click();
             }
-            function openCreateTaskModal(){
+            function openCreateTaskModal() {
                 document.getElementById('open-create-task-modal').click();
             }
         </script>
@@ -89,16 +90,21 @@
                         <li class="active"><a href="#" onclick="openCreateTaskModal()" >Create new Task</a></li>
                         <li><a href="#">About</a></li>
                         <li>
-                            <form class="navbar-form navbar-left" role="search">
+                            <h:form class="navbar-form navbar-left" role="search">
                                 <div class="form-group">
-                                    <input type="text" class="form-control search-box" placeholder="Search Tasks" onfocus="openModal()"/>
+                                    <!--input type="text" class="form-control search-box" 
+                                    placeholder="Search Tasks" onfocus="openModal()" / -->
+                                    <h:inputText class="form-control search-box"
+                                                 pt:placeholder="Search Tasks" onfocus="openModal()"
+                                                 value="#{searchManager.testData}">
+                                        <f:ajax event="keyup" execute="@this" render="search-bar-result" />
+                                    </h:inputText>
                                 </div>
-                            </form>
+                            </h:form>
                         </li>
                         
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-
                         <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                     </ul>
                 </div>
@@ -110,21 +116,25 @@
                 <div class="col-sm-2 sidenav">
                     <h:form>
                         <ul class="list-group">
-                            <li class="list-group-item active-left-menu-item">
+                            <li class="list-group-item #{mc.isActiveMenuElement('NOTIFICATIONS')? 'active-left-menu-item':''}">
                                 <span class="badge">14</span>
-                                <h:commandLink value="Notifications" />
+                                <h:commandLink value="Notifications"
+                                               actionListener="#{mc.navigateMenuElement('NOTIFICATIONS')}"/>
                             </li>
-                            <li class="list-group-item">
+                            <li class="list-group-item #{mc.isActiveMenuElement('MY_TASKS')? 'active-left-menu-item':''}">
                                 <span class="badge">14</span>
-                                <h:commandLink value="My Tasks" />
+                                <h:commandLink value="My Tasks" 
+                                               actionListener="#{mc.navigateMenuElement('MY_TASKS')}"/>
                             </li>
-                            <li class="list-group-item">
+                            <li class="list-group-item #{mc.isActiveMenuElement('ASSIGNED_TASKS')? 'active-left-menu-item':''}">
                                 <span class="badge">14</span>
-                                <h:commandLink value="Assigned Task" />
+                                <h:commandLink value="Assigned Task" 
+                                               actionListener="#{mc.navigateMenuElement('ASSIGNED_TASKS')}"/>
                             </li>
-                            <li class="list-group-item">
+                            <li class="list-group-item #{mc.isActiveMenuElement('MY_EMPLOYEES')? 'active-left-menu-item':''}">
                                 <span class="badge">14</span>
-                                <h:commandLink value="My Employees" />
+                                <h:commandLink value="My Employees" 
+                                               actionListener="#{mc.navigateMenuElement('MY_EMPLOYEES')}"/>
                             </li>
                         </ul>
                     </h:form>
@@ -153,7 +163,9 @@
                         <h4 class="modal-title">Tasks search result</h4>
                     </div>
                     <div class="modal-body">
-
+                        <h:panelGroup id="search-bar-result">
+                            Search result ->  #{searchManager.testData}
+                        </h:panelGroup>
                     </div>
                 </div>
             </div>

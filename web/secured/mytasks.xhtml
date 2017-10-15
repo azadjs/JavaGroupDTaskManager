@@ -8,7 +8,9 @@
     </h:head>
     <h:body>
         <ui:composition>
-            Hello form my Tasks
+            <h:panelGroup rendered="#{mc.currentMenu eq 'MY_TASKS'}">
+                Hello form my Tasks
+            </h:panelGroup>
         </ui:composition>
     </h:body>
 </html>
