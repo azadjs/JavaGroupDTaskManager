@@ -1,6 +1,7 @@
 package org.taskmanager.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.taskmanager.entities.util.TaskStatuses;
 
@@ -11,18 +12,18 @@ import org.taskmanager.entities.util.TaskStatuses;
 public class Task {
 
     public Task() {
-        this.created = LocalDate.now();
+        this.created = LocalDateTime.now();
     }
 
     private Long id;
     private String title;
     private String description;
     private User owner;
-    private LocalDate created;
-    private LocalDate deadline;
+    private LocalDateTime created;
+    private LocalDateTime deadline;
     private TaskStatuses status;
-    private LocalDate solved;
-    private LocalDate assigned;
+    private LocalDateTime solved;
+    private LocalDateTime assigned;
     private List<User> responsibles;
     private List<Comment> comments;
 
@@ -58,19 +59,19 @@ public class Task {
         this.owner = owner;
     }
 
-    public LocalDate getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDate created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
-    public LocalDate getDeadline() {
+    public LocalDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDate deadline) {
+    public void setDeadline(LocalDateTime deadline) {
         this.deadline = deadline;
     }
 
@@ -82,19 +83,19 @@ public class Task {
         this.status = status;
     }
 
-    public LocalDate getSolved() {
+    public LocalDateTime getSolved() {
         return solved;
     }
 
-    public void setSolved(LocalDate solved) {
+    public void setSolved(LocalDateTime solved) {
         this.solved = solved;
     }
 
-    public LocalDate getAssigned() {
+    public LocalDateTime getAssigned() {
         return assigned;
     }
 
-    public void setAssigned(LocalDate assigned) {
+    public void setAssigned(LocalDateTime assigned) {
         this.assigned = assigned;
     }
 

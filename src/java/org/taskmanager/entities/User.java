@@ -17,6 +17,7 @@ public class User {
     private UserRoles userRole;
     private List<Task> tasks;
     private LocalDateTime lastLoginDate;
+    private User manager;
 
     public Long getId() {
         return id;
@@ -72,6 +73,14 @@ public class User {
 
     public void setLastLoginDate(LocalDateTime lastLoginDate) {
         this.lastLoginDate = lastLoginDate;
+    }
+
+    public User getManager() {
+        return manager;
+    }
+
+    public void setManager(User manager) {
+        this.manager = manager;
     }
     
     
