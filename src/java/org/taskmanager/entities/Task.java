@@ -27,6 +27,10 @@ public class Task {
     private List<User> responsibles;
     private List<Comment> comments;
 
+    public Task(String string) {
+        
+    }
+
     public Long getId() {
         return id;
     }

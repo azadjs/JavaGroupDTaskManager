@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 import javax.sql.DataSource;
 import org.taskmanager.entities.Task;
 import org.taskmanager.entities.User;
@@ -78,6 +80,42 @@ public class DataHelper {
             preparedStatement.execute();
         }
         disconnect();
+    }
+    
+    public void updateTask(Task task) throws SQLException{
+        connect();
+        String query = "UPDATE tasks description = ? ,"
+                + " deadline = ? , status = ? , solved = ? , assigned = ? where id = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, task.getDescription());
+        preparedStatement.setDate(2, convertFrom(task.getDeadline()));
+        preparedStatement.setString(3, task.getStatus().getStatus());
+        preparedStatement.setDate(4, convertFrom(task.getSolved()));
+        preparedStatement.setDate(5, convertFrom(task.getAssigned()));
+        preparedStatement.setLong(6, task.getId());
+        preparedStatement.execute();
+        disconnect();
+    }
+    public void removeTask(Task task) throws SQLException{
+        connect();
+        String query = "DELETE from task where id = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, task.getId());
+        preparedStatement.execute();
+        disconnect();
+    }
+    public List<Task>GetTask(User user) throws SQLException{
+       List<Task> task = new ArrayList<>();
+        connect();
+       String query = "SELECT * FROM task_by_user where user_id = ? ";
+       preparedStatement = connection.prepareStatement(query);
+       preparedStatement.setLong(1, user.getId());
+       preparedStatement.execute();
+       while(resultSet.next()){
+           task.add(new Task(resultSet.getString(query)));
+       }
+       disconnect();
+        return task ; 
     }
     
     
