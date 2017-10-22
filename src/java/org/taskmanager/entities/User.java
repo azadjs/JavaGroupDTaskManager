@@ -18,6 +18,14 @@ public class User {
     private List<Task> tasks;
     private LocalDateTime lastLoginDate;
     private User manager;
+    
+    public User(){
+        
+    }
+    public User(Long id){
+        this.id = id;
+    }
+  
 
     public Long getId() {
         return id;
