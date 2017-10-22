@@ -1,10 +1,12 @@
-package org.taskmanager.db;
+package org.taskmanager.providers;
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLType;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import org.taskmanager.entities.util.TaskStatuses;
  *
  * @author Elmar H.Mammadov <jrelmarmammadov@gmail.com>
  */
-public class DataHelper {
+public final class DataHelper {
 
     private final DataSource groupDdatasource;
 
@@ -30,11 +32,12 @@ public class DataHelper {
         this.groupDdatasource = groupDdatasource;
     }
 
-    private void connect() throws SQLException {
+    protected void connect() throws SQLException {
         connection = groupDdatasource.getConnection();
+        connection.setAutoCommit(false);
     }
 
-    private void disconnect() {
+    protected void disconnect() {
         try {
             if (resultSet != null) {
                 resultSet.close();
@@ -51,7 +54,6 @@ public class DataHelper {
     }
 
     public Task getTaskById(Long id) throws SQLException {
-        connect();
         String query = "SELECT * FROM TASKS WHERE ID = ? ";
         preparedStatement = connection.prepareStatement(query);
         preparedStatement.setLong(1, id);
@@ -68,12 +70,10 @@ public class DataHelper {
             t.setSolved(resultSet.getTimestamp(8).toLocalDateTime());
             t.setAssigned(resultSet.getTimestamp(9).toLocalDateTime());
         }
-        disconnect();
         return t;
     }
 
     public void insertTask(Task task) throws SQLException {
-        connect();
         String query = "INSERT INTO TASKS "
                 + "(TITLE,DESCRIPTION,USER_ID,CREATED,DEADLINE,STATUS,SOLVED,ASSIGNED) "
                 + " VALUES "
@@ -88,11 +88,9 @@ public class DataHelper {
         preparedStatement.setDate(7, convertFrom(task.getSolved()));
         preparedStatement.setDate(8, convertFrom(task.getAssigned()));
         preparedStatement.execute();
-        disconnect();
     }
 
     public void insertResponsibleUsers(Task task) throws SQLException {
-        connect();
         String query = "INSERT INTO USERS_TASKS "
                 + "VALUES"
                 + " (?,?) ";
@@ -102,20 +100,38 @@ public class DataHelper {
             preparedStatement.setLong(2, task.getId());
             preparedStatement.execute();
         }
-        disconnect();
+    }
+
+    public void updateTask(Task task) throws SQLException {
+        String query = "UPDATE TASKS SET  "
+                + "(TITLE,DESCRIPTION,USER_ID,DEADLINE,STATUS)"
+                + " VALUES"
+                + "(?,?,?,?,?) where id=?";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, task.getTitle());
+        preparedStatement.setString(2, task.getDescription());
+        preparedStatement.setLong(3, task.getOwner().getId());
+        preparedStatement.setDate(4, convertFrom(task.getDeadline()));
+        preparedStatement.setString(5, task.getStatus().getStatus());
+        preparedStatement.setLong(6, task.getId());
+        preparedStatement.execute();
     }
 
     public void removeTask(Task task) throws SQLException {
-        connect();
         String query = "DELETE FROM task WHERE id = ? ";
         preparedStatement = connection.prepareStatement(query);
         preparedStatement.setLong(1, task.getId());
         preparedStatement.execute();
-        disconnect();
+    }
+
+    public void removeComment(Long commentId) throws SQLException {
+        String query = "DELETE FROM COMMENTS WHERE ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, commentId);
+        preparedStatement.execute();
     }
 
     List<Task> getTasksByAuthor(User author) throws SQLException {
-        connect();
         List<Task> resultedTasks = new ArrayList<>();
         String query = "SELECT * FROM TASKS WHERE USER_ID = ? ";
         preparedStatement.setLong(1, author.getId());
@@ -133,12 +149,10 @@ public class DataHelper {
             t.setAssigned(resultSet.getTimestamp(9).toLocalDateTime());
             resultedTasks.add(t);
         }
-        disconnect();
         return resultedTasks;
     }
 
-    public List<Task> getTask(User responsible) throws SQLException {
-        connect();
+    public List<Task> getTasks(User responsible) throws SQLException {
         List<Task> resultedTasks = new ArrayList<>();
         String query = "SELECT * FROM TASKS_BY_USER WHERE RESP_ID = ? ";
         preparedStatement.setLong(1, responsible.getId());
@@ -156,60 +170,44 @@ public class DataHelper {
             t.setAssigned(resultSet.getTimestamp(9).toLocalDateTime());
             resultedTasks.add(t);
         }
-        disconnect();
         return resultedTasks;
     }
 
     public void assignTask(Long userId, Long taskId) throws SQLException {
-        connect();
         String makeRelationQuery = "INSERT INTO USERS_TASKS VALUES ( ? , ? ) ";
         preparedStatement = connection.prepareStatement(makeRelationQuery);
         preparedStatement.setLong(1, userId);
         preparedStatement.setLong(2, taskId);
         preparedStatement.execute();
-        disconnect();
     }
 
-    public boolean register(User user) {
-        try {
-            connect();
-            String query = " INSERT INTO users ( fullname , username , password, "
-                    + " user_role ) "
-                    + " VALUES ( ? , ? , ? , ? ) ";
-            preparedStatement = connection.prepareCall(query);
-            preparedStatement.setString(1, user.getFullname());
-            preparedStatement.setString(2, user.getUsername());
-            preparedStatement.setString(3, user.getPassword());
-            preparedStatement.setString(4, user.getUserRole().getRole());
-            preparedStatement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace(System.err);
-            return false;
+    public void register(User user) throws SQLException {
+        String query = " INSERT INTO USERS ( fullname , username , password, "
+                + " user_role , manager_id ) "
+                + " VALUES ( ? , ? , ? , ? , ? ) ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, user.getFullname());
+        preparedStatement.setString(2, user.getUsername());
+        preparedStatement.setString(3, user.getPassword());
+        preparedStatement.setString(4, user.getUserRole().getRole());
+        if (user.getManager() == null) {
+            preparedStatement.setNull(5, Types.INTEGER);
+        } else {
+            preparedStatement.setLong(5, user.getManager().getId());
         }
-        disconnect();
-        return true;
+        preparedStatement.execute();
     }
-
 
     private Date convertFrom(LocalDateTime ldt) {
         return new Date(java.util.Date.from(ldt.atZone(ZoneId.systemDefault())
                 .toInstant()).getTime());
     }
 
-    public void updateTask(Task task) throws SQLException {
-        connect();
-        String query = "UPDATE TASKS SET  "
-                + "(TITLE,DESCRIPTION,USER_ID,DEADLINE,STATUS)"
-                + " VALUES"
-                + "(?,?,?,?,?) where id=?";
-        preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, task.getTitle());
-        preparedStatement.setString(2, task.getDescription());
-        preparedStatement.setLong(3, task.getOwner().getId());
-        preparedStatement.setDate(4, convertFrom(task.getDeadline()));
-        preparedStatement.setString(5, task.getStatus().getStatus());
-        preparedStatement.setLong(6, task.getId());
-        preparedStatement.execute();
-        disconnect();
+    protected void commitChanges() throws SQLException {
+        this.connection.commit();
+    }
+
+    protected void rollbackChanges() throws SQLException {
+        this.connection.rollback();
     }
 }
