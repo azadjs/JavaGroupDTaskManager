@@ -11,10 +11,6 @@ import org.taskmanager.entities.util.TaskStatuses;
  */
 public class Task {
 
-    public Task() {
-        this.created = LocalDateTime.now();
-    }
-
     private Long id;
     private String title;
     private String description;
@@ -29,6 +25,14 @@ public class Task {
 
     public Task(String string) {
         
+    }
+
+    public Task() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Task() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Long getId() {
