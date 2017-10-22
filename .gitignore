@@ -1,31 +1,8 @@
-<<<<<<< HEAD
 #ant specific
 dist/
 build/
 
 #netbeans specific
-core
-nbproject/*
-!nbproject/project.properties
-!nbproject/project.xml
-nbproject/private/private.xml
+*.properties
 #java specific
 *.class
-
-#general swap/backup files
-*.so
-*.log
-*.out
-*~
-*.swp
-*.DS_Store
-*.lock
-=======
-nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
-build.xml
->>>>>>> ed24aa7e4247911e010660818ccb25afc569c808
