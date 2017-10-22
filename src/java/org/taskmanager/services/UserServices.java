@@ -12,11 +12,11 @@ public interface UserServices {
 
     User login(String username, String password);
 
-    boolean register(User user);
+    void register(User user);
 
-    boolean logout(User user);
+    void logout(User user);
 
-    boolean writeComment(User user, Task task);
+    void writeComment(User user, Task task);
 
     User getUserById(Long userId);
 

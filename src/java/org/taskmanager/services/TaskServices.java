@@ -12,7 +12,7 @@ import org.taskmanager.entities.util.TaskStatuses;
  */
 public interface TaskServices {
 
-    boolean createTask(Task task);
+    void createTask(Task task);
 
     void assignTask(Task task, List<User> users);
 

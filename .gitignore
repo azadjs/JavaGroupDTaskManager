@@ -3,6 +3,6 @@ dist/
 build/
 
 #netbeans specific
-nbproject/*
+nbproject/private/private.properties
 #java specific
 *.class
