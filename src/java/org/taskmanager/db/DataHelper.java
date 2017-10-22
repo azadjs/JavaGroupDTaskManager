@@ -105,22 +105,6 @@ public class DataHelper {
         disconnect();
     }
 
-    public void updateTask(Task task) throws SQLException {
-        connect();
-        String query = "UPDATE tasks SET "
-                + " ( TITLE , DESCRIPTION , DEADLINE , STATUS , SOLVED ) "
-                + " VALUES ( ? , ? , ? , ? , ? ) WHERE id = ? ";
-        preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, task.getTitle());
-        preparedStatement.setString(2, task.getDescription());
-        preparedStatement.setDate(3, convertFrom(task.getDeadline()));
-        preparedStatement.setString(4, task.getStatus().getStatus());
-        preparedStatement.setDate(5, convertFrom(task.getSolved()));
-        preparedStatement.setLong(6, task.getId());
-        preparedStatement.execute();
-        disconnect();
-    }
-
     public void removeTask(Task task) throws SQLException {
         connect();
         String query = "DELETE FROM task WHERE id = ? ";
@@ -206,9 +190,26 @@ public class DataHelper {
         return true;
     }
 
+
     private Date convertFrom(LocalDateTime ldt) {
         return new Date(java.util.Date.from(ldt.atZone(ZoneId.systemDefault())
                 .toInstant()).getTime());
     }
 
+    public void updateTask(Task task) throws SQLException {
+        connect();
+        String query = "UPDATE TASKS SET  "
+                + "(TITLE,DESCRIPTION,USER_ID,DEADLINE,STATUS)"
+                + " VALUES"
+                + "(?,?,?,?,?) where id=?";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, task.getTitle());
+        preparedStatement.setString(2, task.getDescription());
+        preparedStatement.setLong(3, task.getOwner().getId());
+        preparedStatement.setDate(4, convertFrom(task.getDeadline()));
+        preparedStatement.setString(5, task.getStatus().getStatus());
+        preparedStatement.setLong(6, task.getId());
+        preparedStatement.execute();
+        disconnect();
+    }
 }
