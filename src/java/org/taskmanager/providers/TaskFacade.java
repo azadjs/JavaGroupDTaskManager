@@ -3,8 +3,6 @@ package org.taskmanager.providers;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -115,22 +113,78 @@ public class TaskFacade implements TaskServices {
 
     @Override
     public void changeDeadline(Task task, LocalDateTime targetDeadline) {
-
+        try {
+            dataHelper.connect();
+            task.setDeadline(targetDeadline);
+            dataHelper.updateTask(task);
+            dataHelper.commitChanges();
+        } catch (SQLException e) {
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+        }finally{
+            dataHelper.disconnect();
+        }
     }
 
     @Override
     public List<Task> getTaskByAuthor(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            dataHelper.connect();
+            dataHelper.getTasksByAuthor(user);
+            dataHelper.commitChanges();
+        }catch(SQLException e){
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+        }finally{
+            dataHelper.disconnect();
+        }
+        return (List<Task>) user;
     }
 
     @Override
     public List<Task> getTaskByUser(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            try{
+            dataHelper.connect();
+            dataHelper.getTasks(user);
+            dataHelper.commitChanges();
+        }catch(SQLException e){
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+        }finally{
+            dataHelper.disconnect();
+        }
+        return (List<Task>) user;
     }
-
+    
     @Override
     public Task getTaskById(Long taskId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            dataHelper.connect();
+            dataHelper.getTaskById(taskId);
+            dataHelper.commitChanges();
+        }catch(SQLException e){
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+        }finally{
+            dataHelper.disconnect();
+        }
+        return null;
     }
 
 }
