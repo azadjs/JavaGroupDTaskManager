@@ -4,5 +4,6 @@ build/
 
 #netbeans specific
 nbproject/private/private.properties
+nbproject/private/private.xml
 #java specific
 *.class
