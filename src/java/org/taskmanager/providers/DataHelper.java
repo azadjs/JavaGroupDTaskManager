@@ -182,40 +182,41 @@ public final class DataHelper {
         preparedStatement.execute();
     }
 
-    public User login(String username, String password) throws SQLException{
+    public User login(String username, String password) throws SQLException {
         String query = "SELECT * FROM USERS WHERE USERNAME = ? and PASSWORD = ? ";
         preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, username);
         preparedStatement.setString(2, password);
         resultSet = preparedStatement.executeQuery();
         User u = null;
-        if(resultSet.next()){
+        if (resultSet.next()) {
             u = new User();
             u.setId(resultSet.getLong(1));
-           u.setFullname(resultSet.getString(2));
-           u.setUsername(resultSet.getString(3));
-           u.setPassword(resultSet.getString(4));
-           u.setUserRole(UserRoles.fromValue(resultSet.getString(5)));
-           u.setLastLoginDate(resultSet.getTimestamp(6).toLocalDateTime());
-           u.setManager(new User(resultSet.getLong(7)));
-           return u;
+            u.setFullname(resultSet.getString(2));
+            u.setUsername(resultSet.getString(3));
+            u.setPassword(resultSet.getString(4));
+            u.setUserRole(UserRoles.fromValue(resultSet.getString(5)));
+            u.setLastLoginDate(resultSet.getTimestamp(6) != null
+                    ? resultSet.getTimestamp(6).toLocalDateTime() : null);
+            u.setManager(new User(resultSet.getLong(7)));
+            return u;
         }
         return null;
     }
-    
-    public void writeComment(User user, Task task) throws SQLException{
+
+    public void writeComment(User user, Task task) throws SQLException {
         Comment c = new Comment();
         String query = "SELECT INTO COMMENTS (user_id , comment ,"
                 + " created , task_id "
                 + "VALUES (? , ? , ? , ? )";
         preparedStatement = connection.prepareStatement(query);
         preparedStatement.setLong(1, user.getId());
-        preparedStatement.setString(2, c.getComment() );
-        preparedStatement.setDate(3, convertFrom(c.getCreated())) ;
+        preparedStatement.setString(2, c.getComment());
+        preparedStatement.setDate(3, convertFrom(c.getCreated()));
         preparedStatement.setLong(4, task.getId());
         preparedStatement.execute();
     }
-    
+
     public void register(User user) throws SQLException {
         String query = " INSERT INTO USERS ( fullname , username , password, "
                 + " user_role , manager_id ) "
@@ -232,30 +233,30 @@ public final class DataHelper {
         }
         preparedStatement.execute();
     }
-    
-    public User getUserById (Long userId) throws SQLException{
+
+    public User getUserById(Long userId) throws SQLException {
         String query = "SELECT * FROM USERS  WHERE ID = ? ";
         preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setLong(1, userId );
+        preparedStatement.setLong(1, userId);
         resultSet = preparedStatement.executeQuery();
         User u = null;
         if (resultSet.next()) {
             u = new User();
-           u.setId(resultSet.getLong(1));
-           u.setFullname(resultSet.getString(2));
-           u.setUsername(resultSet.getString(3));
-           u.setPassword(resultSet.getString(4));
-           u.setUserRole(UserRoles.fromValue(resultSet.getString(5)));
-           u.setLastLoginDate(resultSet.getTimestamp(6).toLocalDateTime());
-           u.setManager(new User(resultSet.getLong(7)));
+            u.setId(resultSet.getLong(1));
+            u.setFullname(resultSet.getString(2));
+            u.setUsername(resultSet.getString(3));
+            u.setPassword(resultSet.getString(4));
+            u.setUserRole(UserRoles.fromValue(resultSet.getString(5)));
+            u.setLastLoginDate(resultSet.getTimestamp(6).toLocalDateTime());
+            u.setManager(new User(resultSet.getLong(7)));
         }
         return u;
     }
-    
-    public List<User> getUsersByManager(User manager) throws SQLException{
+
+    public List<User> getUsersByManager(User manager) throws SQLException {
         List<User> usersList = new ArrayList<>();
         String query = "SELECT * FROM USERS WHERE MANAGER_ID = ? ";
-        preparedStatement.setLong(1, manager.getId() );
+        preparedStatement.setLong(1, manager.getId());
         resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             User u = new User();

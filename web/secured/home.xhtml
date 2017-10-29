@@ -102,10 +102,20 @@
                                 </div>
                             </h:form>
                         </li>
-                        
+
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                        <li>
+                            <a href="#"> #{login.currentUser.fullname} </a>
+                        </li>
+                        <li>
+                            <h:form style="margin-top: 10px;">
+                                <h:commandLink style="margin:10px;" action="#{login.logout()}" >
+                                    <span class="glyphicon glyphicon-log-in"></span>
+                                    Logout
+                                </h:commandLink>
+                            </h:form>
+                        </li>
                     </ul>
                 </div>
             </div>

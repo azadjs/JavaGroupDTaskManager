@@ -28,7 +28,7 @@ public class TaskFacade implements TaskServices {
     public TaskFacade() throws TaskException {
         try {
             Context c = new InitialContext();
-            dataSource = (DataSource) c.lookup("java:/comp/env/jdbc/groupd");
+            dataSource = (DataSource) c.lookup("jdbc/groupd");
             dataHelper = new DataHelper(dataSource);
         } catch (NamingException e) {
             e.printStackTrace(System.err);
