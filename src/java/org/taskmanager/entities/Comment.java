@@ -11,11 +11,14 @@ public class Comment {
     public Comment() {
         this.created = LocalDateTime.now();
     }
+    
 
     private Long id;
     private User commenter;
     private String comment;
     private LocalDateTime created;
+
+
 
     public Long getId() {
         return id;

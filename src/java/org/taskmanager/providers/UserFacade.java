@@ -1,6 +1,11 @@
 package org.taskmanager.providers;
 
+import java.sql.SQLException;
 import java.util.List;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import org.taskmanager.entities.Task;
 import org.taskmanager.entities.User;
 import org.taskmanager.services.UserServices;
@@ -10,35 +15,114 @@ import org.taskmanager.services.UserServices;
  * @author Elmar H.Mammadov <jrelmarmammadov@gmail.com>
  */
 public class UserFacade implements UserServices {
+    private DataHelper dataHelper;
+    private DataSource dataSource;
+
+    public UserFacade() {
+        try {
+            Context c = new InitialContext();
+            dataSource = (DataSource) c.lookup("java:/comp/env/jdbc/groupd");
+            dataHelper = new DataHelper(dataSource);
+        } catch (NamingException e) {
+            e.printStackTrace(System.err);
+        }
+    }
 
     @Override
     public User login(String username, String password) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        User user = null; 
+        try{
+            dataHelper.connect();
+            user = dataHelper.login(username, password);
+            dataHelper.commitChanges();
+        }catch(SQLException e){
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+        }finally{
+            dataHelper.disconnect();
+        }
+        return user;
     }
 
     @Override
     public User getUserById(Long userId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        User user = null; 
+        try{
+            dataHelper.connect();
+            user = dataHelper.getUserById(userId);
+            dataHelper.commitChanges();
+        }catch(SQLException e){
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+        }finally{
+            dataHelper.disconnect();
+        }
+        return user;
     }
 
     @Override
     public List<User> getUsersByManager(User manager) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<User> user = null;
+        try{
+            dataHelper.connect();
+            user = dataHelper.getUsersByManager(manager);
+            dataHelper.commitChanges();
+        }catch(SQLException e){
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+        }finally{
+            dataHelper.disconnect();
+        }
+        return user;
     }
 
     @Override
     public void register(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void logout(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            dataHelper.connect();
+            dataHelper.register(user);
+            dataHelper.commitChanges();
+        }catch(SQLException e){
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+        }finally{
+            dataHelper.disconnect();
+        }
     }
 
     @Override
     public void writeComment(User user, Task task) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            dataHelper.connect();
+            dataHelper.writeComment(user, task);
+            dataHelper.commitChanges();
+        }catch(SQLException e){
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+        }finally{
+            dataHelper.disconnect();
+        }
     }
 
+    
 }

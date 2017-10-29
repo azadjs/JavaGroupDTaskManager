@@ -5,16 +5,17 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLType;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
+import org.taskmanager.entities.Comment;
 import org.taskmanager.entities.Task;
 import org.taskmanager.entities.User;
 import org.taskmanager.entities.util.TaskStatuses;
+import org.taskmanager.entities.util.UserRoles;
 
 /**
  *
@@ -181,6 +182,40 @@ public final class DataHelper {
         preparedStatement.execute();
     }
 
+    public User login(String username, String password) throws SQLException{
+        String query = "SELECT * FROM USERS WHERE USERNAME = ? and PASSWORD = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, password);
+        resultSet = preparedStatement.executeQuery();
+        User u = null;
+        if(resultSet.next()){
+            u = new User();
+            u.setId(resultSet.getLong(1));
+           u.setFullname(resultSet.getString(2));
+           u.setUsername(resultSet.getString(3));
+           u.setPassword(resultSet.getString(4));
+           u.setUserRole(UserRoles.fromValue(resultSet.getString(5)));
+           u.setLastLoginDate(resultSet.getTimestamp(6).toLocalDateTime());
+           u.setManager(new User(resultSet.getLong(7)));
+           return u;
+        }
+        return null;
+    }
+    
+    public void writeComment(User user, Task task) throws SQLException{
+        Comment c = new Comment();
+        String query = "SELECT INTO COMMENTS (user_id , comment ,"
+                + " created , task_id "
+                + "VALUES (? , ? , ? , ? )";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, user.getId());
+        preparedStatement.setString(2, c.getComment() );
+        preparedStatement.setDate(3, convertFrom(c.getCreated())) ;
+        preparedStatement.setLong(4, task.getId());
+        preparedStatement.execute();
+    }
+    
     public void register(User user) throws SQLException {
         String query = " INSERT INTO USERS ( fullname , username , password, "
                 + " user_role , manager_id ) "
@@ -196,6 +231,42 @@ public final class DataHelper {
             preparedStatement.setLong(5, user.getManager().getId());
         }
         preparedStatement.execute();
+    }
+    
+    public User getUserById (Long userId) throws SQLException{
+        String query = "SELECT * FROM USERS  WHERE ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, userId );
+        resultSet = preparedStatement.executeQuery();
+        User u = null;
+        if (resultSet.next()) {
+            u = new User();
+           u.setId(resultSet.getLong(1));
+           u.setFullname(resultSet.getString(2));
+           u.setUsername(resultSet.getString(3));
+           u.setPassword(resultSet.getString(4));
+           u.setUserRole(UserRoles.fromValue(resultSet.getString(5)));
+           u.setLastLoginDate(resultSet.getTimestamp(6).toLocalDateTime());
+           u.setManager(new User(resultSet.getLong(7)));
+        }
+        return u;
+    }
+    
+    public List<User> getUsersByManager(User manager) throws SQLException{
+        List<User> usersList = new ArrayList<>();
+        String query = "SELECT * FROM USERS WHERE MANAGER_ID = ? ";
+        preparedStatement.setLong(1, manager.getId() );
+        resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            User u = new User();
+            u.setId(resultSet.getLong(1));
+            u.setFullname(resultSet.getString(2));
+            u.setUsername(resultSet.getString(3));
+            u.setPassword(resultSet.getString(4));
+            u.setUserRole(UserRoles.fromValue(resultSet.getString(5)));
+            usersList.add(u);
+        }
+        return usersList;
     }
 
     private Date convertFrom(LocalDateTime ldt) {

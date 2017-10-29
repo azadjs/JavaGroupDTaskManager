@@ -132,9 +132,10 @@ public class TaskFacade implements TaskServices {
 
     @Override
     public List<Task> getTaskByAuthor(User user) {
+        List<Task> authorstasks = null;
         try{
             dataHelper.connect();
-            dataHelper.getTasksByAuthor(user);
+            authorstasks =dataHelper.getTasksByAuthor(user);
             dataHelper.commitChanges();
         }catch(SQLException e){
             try {
@@ -146,14 +147,15 @@ public class TaskFacade implements TaskServices {
         }finally{
             dataHelper.disconnect();
         }
-        return (List<Task>) user;
+        return authorstasks;
     }
 
     @Override
     public List<Task> getTaskByUser(User user) {
+        List<Task> userstasks = null;
             try{
             dataHelper.connect();
-            dataHelper.getTasks(user);
+           userstasks = dataHelper.getTasks(user);
             dataHelper.commitChanges();
         }catch(SQLException e){
             try {
@@ -165,14 +167,15 @@ public class TaskFacade implements TaskServices {
         }finally{
             dataHelper.disconnect();
         }
-        return (List<Task>) user;
+        return userstasks;
     }
     
     @Override
     public Task getTaskById(Long taskId) {
+        Task task = null;
         try{
             dataHelper.connect();
-            dataHelper.getTaskById(taskId);
+            task = dataHelper.getTaskById(taskId);
             dataHelper.commitChanges();
         }catch(SQLException e){
             try {
@@ -184,7 +187,7 @@ public class TaskFacade implements TaskServices {
         }finally{
             dataHelper.disconnect();
         }
-        return null;
+        return task;
     }
 
 }

@@ -14,8 +14,6 @@ public interface UserServices {
 
     void register(User user);
 
-    void logout(User user);
-
     void writeComment(User user, Task task);
 
     User getUserById(Long userId);
