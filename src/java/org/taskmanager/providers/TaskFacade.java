@@ -11,6 +11,9 @@ import org.taskmanager.entities.Comment;
 import org.taskmanager.entities.Task;
 import org.taskmanager.entities.User;
 import org.taskmanager.entities.util.TaskStatuses;
+import org.taskmanager.providers.exceptions.CanNotChangeTaskException;
+import org.taskmanager.providers.exceptions.CanNotCreateTaskException;
+import org.taskmanager.providers.exceptions.TaskException;
 import org.taskmanager.services.TaskServices;
 
 /**
@@ -22,18 +25,19 @@ public class TaskFacade implements TaskServices {
     private DataHelper dataHelper;
     private DataSource dataSource;
 
-    public TaskFacade() {
+    public TaskFacade() throws TaskException {
         try {
             Context c = new InitialContext();
             dataSource = (DataSource) c.lookup("java:/comp/env/jdbc/groupd");
             dataHelper = new DataHelper(dataSource);
         } catch (NamingException e) {
             e.printStackTrace(System.err);
+            throw new TaskException();
         }
     }
 
     @Override
-    public void createTask(Task task) {
+    public void createTask(Task task) throws CanNotCreateTaskException {
         try {
             dataHelper.connect();
             dataHelper.insertTask(task);
@@ -46,13 +50,14 @@ public class TaskFacade implements TaskServices {
                 e2.printStackTrace(System.err);
             }
             e.printStackTrace(System.err);
+            throw new CanNotCreateTaskException(e.getMessage());
         } finally {
             dataHelper.disconnect();
         }
     }
 
     @Override
-    public void assignTask(Task task, List<User> users) {
+    public void assignTask(Task task, List<User> users) throws CanNotChangeTaskException {
         try {
             dataHelper.connect();
             for (User u : users) {
@@ -66,13 +71,14 @@ public class TaskFacade implements TaskServices {
                 ex.printStackTrace(System.err);
             }
             e.printStackTrace(System.err);
+            throw new CanNotChangeTaskException("Can not assign task " + task + users);
         } finally {
             dataHelper.disconnect();
         }
     }
 
     @Override
-    public void removeTask(Task task) {
+    public void removeTask(Task task) throws TaskException {
         try {
             dataHelper.connect();
             for (Comment c : task.getComments()) {
@@ -87,13 +93,14 @@ public class TaskFacade implements TaskServices {
                 ex.printStackTrace(System.err);
             }
             e.printStackTrace(System.err);
+            throw new TaskException("Can not remove task " + task);
         } finally {
             dataHelper.disconnect();
         }
     }
 
     @Override
-    public void changeTaskStatus(Task task, TaskStatuses targetStatus) {
+    public void changeTaskStatus(Task task, TaskStatuses targetStatus) throws CanNotChangeTaskException {
         try {
             dataHelper.connect();
             task.setStatus(targetStatus);
@@ -106,13 +113,14 @@ public class TaskFacade implements TaskServices {
                 ex.printStackTrace(System.err);
             }
             e.printStackTrace(System.err);
+            throw new CanNotChangeTaskException("Can not change status" + task + targetStatus);
         } finally {
             dataHelper.disconnect();
         }
     }
 
     @Override
-    public void changeDeadline(Task task, LocalDateTime targetDeadline) {
+    public void changeDeadline(Task task, LocalDateTime targetDeadline) throws CanNotChangeTaskException {
         try {
             dataHelper.connect();
             task.setDeadline(targetDeadline);
@@ -125,66 +133,70 @@ public class TaskFacade implements TaskServices {
                 ex.printStackTrace(System.err);
             }
             e.printStackTrace(System.err);
-        }finally{
+            throw new CanNotChangeTaskException("Can not change deadline" + task + targetDeadline);
+        } finally {
             dataHelper.disconnect();
         }
     }
 
     @Override
-    public List<Task> getTaskByAuthor(User user) {
+    public List<Task> getTaskByAuthor(User user) throws TaskException {
         List<Task> authorstasks = null;
-        try{
+        try {
             dataHelper.connect();
-            authorstasks =dataHelper.getTasksByAuthor(user);
+            authorstasks = dataHelper.getTasksByAuthor(user);
             dataHelper.commitChanges();
-        }catch(SQLException e){
+        } catch (SQLException e) {
             try {
                 dataHelper.rollbackChanges();
             } catch (SQLException ex) {
                 ex.printStackTrace(System.err);
             }
             e.printStackTrace(System.err);
-        }finally{
+            throw new TaskException("Can not getTask by Author " + user);
+        } finally {
             dataHelper.disconnect();
         }
         return authorstasks;
     }
 
     @Override
-    public List<Task> getTaskByUser(User user) {
+    public List<Task> getTaskByUser(User user) throws TaskException {
         List<Task> userstasks = null;
-            try{
+        try {
             dataHelper.connect();
-           userstasks = dataHelper.getTasks(user);
+            userstasks = dataHelper.getTasks(user);
             dataHelper.commitChanges();
-        }catch(SQLException e){
+        } catch (SQLException e) {
             try {
                 dataHelper.rollbackChanges();
             } catch (SQLException ex) {
                 ex.printStackTrace(System.err);
             }
             e.printStackTrace(System.err);
-        }finally{
+            throw new TaskException("Can not get Tasks by responsible User" + user);
+        } finally {
             dataHelper.disconnect();
         }
         return userstasks;
     }
-    
+
     @Override
-    public Task getTaskById(Long taskId) {
+    public Task getTaskById(Long taskId) throws TaskException {
         Task task = null;
-        try{
+        try {
             dataHelper.connect();
             task = dataHelper.getTaskById(taskId);
             dataHelper.commitChanges();
-        }catch(SQLException e){
+        } catch (SQLException e) {
             try {
                 dataHelper.rollbackChanges();
             } catch (SQLException ex) {
                 ex.printStackTrace(System.err);
             }
             e.printStackTrace(System.err);
-        }finally{
+            throw new TaskException("Can not get Task by ID" + taskId);
+        } finally {
             dataHelper.disconnect();
         }
         return task;

@@ -5,6 +5,9 @@ import java.util.List;
 import org.taskmanager.entities.Task;
 import org.taskmanager.entities.User;
 import org.taskmanager.entities.util.TaskStatuses;
+import org.taskmanager.providers.exceptions.CanNotChangeTaskException;
+import org.taskmanager.providers.exceptions.CanNotCreateTaskException;
+import org.taskmanager.providers.exceptions.TaskException;
 
 /**
  *
@@ -12,22 +15,20 @@ import org.taskmanager.entities.util.TaskStatuses;
  */
 public interface TaskServices {
 
-    void createTask(Task task);
+    void createTask(Task task) throws CanNotCreateTaskException;
 
-    void assignTask(Task task, List<User> users);
+    void assignTask(Task task, List<User> users) throws CanNotChangeTaskException;
 
-    void removeTask(Task task);
+    void removeTask(Task task) throws TaskException;
 
-    void changeTaskStatus(Task task, TaskStatuses targetStatus);
+    void changeTaskStatus(Task task, TaskStatuses targetStatus) throws CanNotChangeTaskException;
 
-    void changeDeadline(Task task, LocalDateTime targetDeadline);
+    void changeDeadline(Task task, LocalDateTime targetDeadline) throws CanNotChangeTaskException;
 
-    List<Task> getTaskByAuthor(User user);
+    List<Task> getTaskByAuthor(User user) throws TaskException;
 
-    List<Task> getTaskByUser(User user);
-    
-    Task getTaskById(Long taskId);
-    
-    
-    
+    List<Task> getTaskByUser(User user) throws TaskException;
+
+    Task getTaskById(Long taskId) throws TaskException;
+
 }

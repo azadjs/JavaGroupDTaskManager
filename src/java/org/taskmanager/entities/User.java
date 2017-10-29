@@ -9,7 +9,7 @@ import org.taskmanager.entities.util.UserRoles;
  * @author elmarmammadov
  */
 public class User {
-    
+
     private Long id;
     private String fullname;
     private String username;
@@ -18,14 +18,14 @@ public class User {
     private List<Task> tasks;
     private LocalDateTime lastLoginDate;
     private User manager;
-    
-    public User(){
-        
+
+    public User() {
+
     }
-    public User(Long id){
+
+    public User(Long id) {
         this.id = id;
     }
-  
 
     public Long getId() {
         return id;
@@ -90,7 +90,10 @@ public class User {
     public void setManager(User manager) {
         this.manager = manager;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "\nUser{" + "id=" + id + ", fullname=" + fullname + ", username=" + username + ", password=" + password + ", userRole=" + userRole + ", tasks=" + tasks + ", lastLoginDate=" + lastLoginDate + ", manager=" + manager + '}' + "\n";
+    }
+
 }

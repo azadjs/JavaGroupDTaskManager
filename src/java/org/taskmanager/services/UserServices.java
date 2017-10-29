@@ -3,6 +3,9 @@ package org.taskmanager.services;
 import java.util.List;
 import org.taskmanager.entities.Task;
 import org.taskmanager.entities.User;
+import org.taskmanager.providers.exceptions.CommentException;
+import org.taskmanager.providers.exceptions.UserAuthenticationException;
+import org.taskmanager.providers.exceptions.UserException;
 
 /**
  *
@@ -10,13 +13,13 @@ import org.taskmanager.entities.User;
  */
 public interface UserServices {
 
-    User login(String username, String password);
+    User login(String username, String password) throws UserAuthenticationException;
 
-    void register(User user);
+    void writeComment(User user, Task task) throws CommentException;
 
-    void writeComment(User user, Task task);
+    User getUserById(Long userId) throws UserException;
 
-    User getUserById(Long userId);
+    List<User> getUsersByManager(User manager) throws UserException;
 
-    List<User> getUsersByManager(User manager);
+    void register(User user) throws UserException;
 }

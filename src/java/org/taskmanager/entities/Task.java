@@ -120,4 +120,15 @@ public class Task {
         this.comments = comments;
     }
 
+    @Override
+    public String toString() {
+        return "\nTask{" + "id=" + id + ", title=" + title + 
+                ", description=" + description + ", owner=" + owner + 
+                ", created=" + created + ", deadline=" + deadline + ", status=" +
+                status + ", solved=" + solved + ", assigned=" + assigned + 
+                ", responsibles=" + responsibles + ", comments=" + comments + '}'+"\n";
+    }
+
+    
+    
 }

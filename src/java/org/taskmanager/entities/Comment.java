@@ -52,4 +52,11 @@ public class Comment {
         this.created = created;
     }
 
+    @Override
+    public String toString() {
+        return "\nComment{" + "id=" + id + ", commenter=" + commenter + ", comment=" + comment + ", created=" + created + '}'+"\n";
+    }
+    
+    
+
 }
