@@ -43,7 +43,6 @@ public class LoginController {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
                     .getExternalContext().getSession(true);
             session.setAttribute("user", currentUser);
-
             return "/secured/home.xhtml?faces-redirect=true";
         } catch (UserAuthenticationException e) {
             e.printStackTrace(System.err);
@@ -61,7 +60,7 @@ public class LoginController {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
                 .getExternalContext().getSession(false);
         session.invalidate();
-        return "login.xhtml";
+        return "/login.xhtml";
     }
 
     public String getUsername() {

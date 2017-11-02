@@ -87,13 +87,12 @@
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#" onclick="openCreateTaskModal()" >Create new Task</a></li>
+                        <li style="display: #{security.hasUIPermission('MY_TASKS') ? '' : 'none' }"
+                            class="active"><a href="#" onclick="openCreateTaskModal()" >Create new Task</a></li>
                         <li><a href="#">About</a></li>
                         <li>
                             <h:form class="navbar-form navbar-left" role="search">
                                 <div class="form-group">
-                                    <!--input type="text" class="form-control search-box" 
-                                    placeholder="Search Tasks" onfocus="openModal()" / -->
                                     <h:inputText class="form-control search-box"
                                                  pt:placeholder="Search Tasks" onfocus="openModal()"
                                                  value="#{searchManager.testData}">
@@ -126,22 +125,26 @@
                 <div class="col-sm-2 sidenav">
                     <h:form>
                         <ul class="list-group">
-                            <li class="list-group-item #{mc.isActiveMenuElement('NOTIFICATIONS')? 'active-left-menu-item':''}">
+                            <li class="list-group-item #{mc.isActiveMenuElement('NOTIFICATIONS')? 'active-left-menu-item':''}"
+                                style="display: #{security.hasUIPermission('NOTIFICATIONS') ? '' : 'none' }">
                                 <span class="badge">14</span>
                                 <h:commandLink value="Notifications"
                                                actionListener="#{mc.navigateMenuElement('NOTIFICATIONS')}"/>
                             </li>
-                            <li class="list-group-item #{mc.isActiveMenuElement('MY_TASKS')? 'active-left-menu-item':''}">
+                            <li class="list-group-item #{mc.isActiveMenuElement('MY_TASKS')? 'active-left-menu-item':''}"
+                                style="display: #{security.hasUIPermission('MY_TASKS') ? '' : 'none' }">
                                 <span class="badge">14</span>
                                 <h:commandLink value="My Tasks" 
                                                actionListener="#{mc.navigateMenuElement('MY_TASKS')}"/>
                             </li>
-                            <li class="list-group-item #{mc.isActiveMenuElement('ASSIGNED_TASKS')? 'active-left-menu-item':''}">
+                            <li class="list-group-item #{mc.isActiveMenuElement('ASSIGNED_TASKS')? 'active-left-menu-item':''}"
+                                style="display: #{security.hasUIPermission('ASSIGNED_TASKS') ? '' : 'none' }">
                                 <span class="badge">14</span>
                                 <h:commandLink value="Assigned Task" 
                                                actionListener="#{mc.navigateMenuElement('ASSIGNED_TASKS')}"/>
                             </li>
-                            <li class="list-group-item #{mc.isActiveMenuElement('MY_EMPLOYEES')? 'active-left-menu-item':''}">
+                            <li class="list-group-item #{mc.isActiveMenuElement('MY_EMPLOYEES')? 'active-left-menu-item':''}"
+                                style="display: #{security.hasUIPermission('MY_EMPLOYEES') ? '' : 'none' }">
                                 <span class="badge">14</span>
                                 <h:commandLink value="My Employees" 
                                                actionListener="#{mc.navigateMenuElement('MY_EMPLOYEES')}"/>
