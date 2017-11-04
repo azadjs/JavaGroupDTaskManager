@@ -7,6 +7,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import org.taskmanager.entities.User;
+import org.taskmanager.managedbeans.util.CrazyHash;
 import org.taskmanager.managedbeans.util.MessageController;
 import org.taskmanager.providers.UserFacade;
 import org.taskmanager.providers.exceptions.UserAuthenticationException;
@@ -39,7 +40,8 @@ public class LoginController {
 
     public String login() {
         try {
-            currentUser = userService.login(username, password);
+            CrazyHash hasher = new CrazyHash();
+            currentUser = userService.login(username, hasher.getHash(password));
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
                     .getExternalContext().getSession(true);
             session.setAttribute("user", currentUser);

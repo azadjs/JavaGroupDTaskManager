@@ -40,6 +40,9 @@ public class UserFacade implements UserServices {
             dataHelper.connect();
             user = dataHelper.login(username, password);
             dataHelper.commitChanges();
+            if(user == null){
+                throw new UserAuthenticationException();
+            }
         } catch (SQLException e) {
             try {
                 dataHelper.rollbackChanges();
