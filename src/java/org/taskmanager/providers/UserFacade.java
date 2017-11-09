@@ -96,6 +96,7 @@ public class UserFacade implements UserServices {
         } finally {
             dataHelper.disconnect();
         }
+        System.out.println("Facade data "+user);
         return user;
     }
 

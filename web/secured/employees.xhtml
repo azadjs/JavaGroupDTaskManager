@@ -9,7 +9,33 @@
     <h:body>
         <ui:composition>
             <h:panelGroup rendered="#{mc.currentMenu eq 'MY_EMPLOYEES'}">
-                Hello from employees
+                <div style="margin: 20px;">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Full name</td>
+                                <td>Username</td>
+                                <td>Role</td>
+                                <td>Last login date</td>
+                                <td>Operations</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ui:repeat value="#{empctrl.employees}" var="emp">
+                                <tr>
+                                    <td>#{emp.fullname}</td>
+                                    <td>#{emp.username}</td>
+                                    <td>#{emp.userRole}</td>
+                                    <td>#{emp.lastLoginDate}</td>
+                                    <td>
+                                        <h:commandButton value="Remove" class="btn btn-danger" />
+                                        <h:commandButton value="View Details" class="btn btn-info" />
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                        </tbody>
+                    </table>
+                </div>
             </h:panelGroup>
         </ui:composition>
     </h:body>

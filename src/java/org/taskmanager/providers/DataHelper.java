@@ -135,6 +135,7 @@ public final class DataHelper {
     List<Task> getTasksByAuthor(User author) throws SQLException {
         List<Task> resultedTasks = new ArrayList<>();
         String query = "SELECT * FROM TASKS WHERE USER_ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
         preparedStatement.setLong(1, author.getId());
         resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
@@ -156,6 +157,7 @@ public final class DataHelper {
     public List<Task> getTasks(User responsible) throws SQLException {
         List<Task> resultedTasks = new ArrayList<>();
         String query = "SELECT * FROM TASKS_BY_USER WHERE RESP_ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
         preparedStatement.setLong(1, responsible.getId());
         resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
@@ -256,15 +258,19 @@ public final class DataHelper {
     public List<User> getUsersByManager(User manager) throws SQLException {
         List<User> usersList = new ArrayList<>();
         String query = "SELECT * FROM USERS WHERE MANAGER_ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        System.out.println(">>>>>>>>>>>>>>>>>>>"+manager);
         preparedStatement.setLong(1, manager.getId());
         resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
+            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             User u = new User();
             u.setId(resultSet.getLong(1));
             u.setFullname(resultSet.getString(2));
             u.setUsername(resultSet.getString(3));
             u.setPassword(resultSet.getString(4));
             u.setUserRole(UserRoles.fromValue(resultSet.getString(5)));
+            System.out.println(">>>>>>>>>>.Result"+u);
             usersList.add(u);
         }
         return usersList;

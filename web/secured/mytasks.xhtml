@@ -9,7 +9,32 @@
     <h:body>
         <ui:composition>
             <h:panelGroup rendered="#{mc.currentMenu eq 'MY_TASKS'}">
-                Hello form my Tasks
+                <div style="margin: 20px;">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Title</td>
+                                <td>Owner</td>
+                                <td>Created</td>
+                                <td>Deadline</td>
+                                <td>Status</td>
+                                <td>Solved</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ui:repeat value="#{taskctrl.myTasks}" var="tsk">
+                                <tr>
+                                    <td>#{tsk.title}</td>
+                                    <td>#{tsk.owner.fullname}</td>
+                                    <td>#{tsk.created}</td>
+                                    <td>#{tsk.deadline}</td>
+                                    <td>#{tsk.status}</td>
+                                    <td>#{tsk.solved}</td>
+                                </tr>
+                            </ui:repeat>
+                        </tbody>
+                    </table>
+                </div>
             </h:panelGroup>
         </ui:composition>
     </h:body>
