@@ -40,8 +40,7 @@ public class LoginController {
 
     public String login() {
         try {
-            CrazyHash hasher = new CrazyHash();
-            currentUser = userService.login(username, hasher.getHash(password));
+            currentUser = userService.login(username, new CrazyHash().getHash(password));
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
                     .getExternalContext().getSession(true);
             session.setAttribute("user", currentUser);

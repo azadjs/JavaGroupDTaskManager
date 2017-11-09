@@ -9,10 +9,10 @@ import java.security.NoSuchAlgorithmException;
  */
 public class CrazyHash {
 
-    private final String SALT_DATA = "D178D6D084BD98A9D88D8B5FED1C2A859504355F6D1DED5D7B129D9834720B59";
+    //private final String SALT_DATA = "D178D6D084BD98A9D88D8B5FED1C2A859504355F6D1DED5D7B129D9834720B59";
 
     public String getHash(String content) throws NoSuchAlgorithmException {
-        content += SALT_DATA;
+       // content += SALT_DATA;
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(content.getBytes());
         byte updatedPass[] = md.digest();
