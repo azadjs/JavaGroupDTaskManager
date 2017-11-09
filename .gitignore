@@ -2,7 +2,5 @@
 dist/
 build/
 
-#netbeans specific
-nbproject/private/
 #java specific
 *.class
