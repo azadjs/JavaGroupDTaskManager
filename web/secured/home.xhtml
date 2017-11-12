@@ -13,6 +13,10 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="../resources/js/jquery.datetimepicker.full.min.js" />
+        <link href="../resources/css/jquery.datetimepicker.css" rel="stylesheet"></link>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
         <script>
             function openModal() {
                 document.getElementById('modal-trigger').click();
@@ -21,6 +25,7 @@
                 document.getElementById('open-create-task-modal').click();
             }
         </script>
+
         <style>
             .navbar {
                 margin-bottom: 0;
@@ -185,8 +190,10 @@
         </div>
 
 
-        <button type="button" id="open-create-task-modal" style="display: none" class="btn btn-info btn-lg" data-toggle="modal" data-target="#create-task-modal">Open Modal</button>
-        <div class="modal fade" id="create-task-modal" role="dialog" data-keyboard="false" data-backdrop="static">
+        <button type="button" id="open-create-task-modal" style="display: none" class="btn btn-info btn-lg"
+                data-toggle="modal" data-target="#create-task-modal">Open Modal</button>
+        <div class="modal fade" id="create-task-modal" role="dialog" data-keyboard="false" data-backdrop="static"
+             style="height: 600px">
             <h:form>
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -197,29 +204,34 @@
                         <div class="modal-body">
                             <h:panelGrid  class="custom-table" columns="2" style="width: 100%;">
                                 <h:outputLabel value="Title" />
-                                <h:inputText  class="form-control custom-input"
+                                <h:inputText  class="form-control custom-input" value="#{taskctrl.task.title}"
                                               required="true" requiredMessage="Title must be specified"/>
                                 <h:outputLabel value="Description" />
                                 <h:inputTextarea style="max-height:65px" class="form-control custom-input"
+                                                 value="#{taskctrl.task.description}"
                                                  required="true" requiredMessage="Description must be specified"/>
                                 <h:outputLabel value="Deadline" />
-                                <h:inputText class="form-control custom-input"
-                                             required="true" requiredMessage="Deadline must be specified"/>
-                                <h:outputLabel value="Responsibles" />
-                                <h:selectManyListbox class="form-control custom-input">
-                                    <f:selectItem itemLabel="Yaqubxan" />
-                                    <f:selectItem itemLabel="Azad" />
-                                </h:selectManyListbox>
+                                <h:inputText class="form-control custom-input datepicker" 
+                                             value="#{taskctrl.deadline}"
+                                             required="true" 
+                                             requiredMessage="Deadline must be specified">
+                                    <f:convertDateTime pattern="yyyy/MM/dd HH:mm" />
+                                </h:inputText>
                             </h:panelGrid>
                         </div>
                         <div class="modal-footer">
-                            <h:messages />
-                            <h:commandButton value="Save" class="btn btn-info">
+                            <h:messages errorClass="err-msg" infoClass="inf-msg" />
+                            <h:commandButton value="Save" class="btn btn-info" actionListener="#{taskctrl.createNewTask}">
                                 <f:ajax execute="@form" render="@form" />
                             </h:commandButton>
                         </div>
                     </div>
                 </div>
+                <script type="text/javascript">
+                    $(function () {
+                        $(".datepicker").datetimepicker();
+                    });
+                </script>
             </h:form>
         </div>
     </h:body>

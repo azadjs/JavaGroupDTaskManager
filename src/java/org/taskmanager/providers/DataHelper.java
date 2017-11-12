@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLType;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -83,11 +85,19 @@ public final class DataHelper {
         preparedStatement.setString(1, task.getTitle());
         preparedStatement.setString(2, task.getDescription());
         preparedStatement.setLong(3, task.getOwner().getId());
-        preparedStatement.setDate(4, convertFrom(task.getCreated()));
-        preparedStatement.setDate(5, convertFrom(task.getDeadline()));
+        preparedStatement.setTimestamp(4, new Timestamp(convertFrom(task.getCreated()).getTime()));
+        preparedStatement.setTimestamp(5, new Timestamp(convertFrom(task.getDeadline()).getTime()));
         preparedStatement.setString(6, task.getStatus().getStatus());
-        preparedStatement.setDate(7, convertFrom(task.getSolved()));
-        preparedStatement.setDate(8, convertFrom(task.getAssigned()));
+        if (task.getSolved() != null) {
+            preparedStatement.setDate(7, convertFrom(task.getSolved()));
+        } else {
+            preparedStatement.setNull(7, Types.TIMESTAMP);
+        }
+        if (task.getAssigned() != null) {
+            preparedStatement.setDate(8, convertFrom(task.getAssigned()));
+        } else {
+            preparedStatement.setNull(8, Types.TIMESTAMP);
+        }
         preparedStatement.execute();
     }
 
@@ -143,12 +153,12 @@ public final class DataHelper {
             t.setId(resultSet.getLong(1));
             t.setTitle(resultSet.getString(2));
             t.setDescription(resultSet.getString(3));
-            t.setOwner(new User(resultSet.getLong(4)));
+            t.setOwner(author);
             t.setCreated(resultSet.getTimestamp(5).toLocalDateTime());
             t.setDeadline(resultSet.getTimestamp(6).toLocalDateTime());
             t.setStatus(TaskStatuses.fromValue(resultSet.getString(7)));
-            t.setSolved(resultSet.getTimestamp(8).toLocalDateTime());
-            t.setAssigned(resultSet.getTimestamp(9).toLocalDateTime());
+            t.setSolved(resultSet.getTimestamp(8) != null ? resultSet.getTimestamp(8).toLocalDateTime() : null);
+            t.setAssigned(resultSet.getTimestamp(9) != null ? resultSet.getTimestamp(9).toLocalDateTime() : null);
             resultedTasks.add(t);
         }
         return resultedTasks;
@@ -259,18 +269,15 @@ public final class DataHelper {
         List<User> usersList = new ArrayList<>();
         String query = "SELECT * FROM USERS WHERE MANAGER_ID = ? ";
         preparedStatement = connection.prepareStatement(query);
-        System.out.println(">>>>>>>>>>>>>>>>>>>"+manager);
         preparedStatement.setLong(1, manager.getId());
         resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             User u = new User();
             u.setId(resultSet.getLong(1));
             u.setFullname(resultSet.getString(2));
             u.setUsername(resultSet.getString(3));
             u.setPassword(resultSet.getString(4));
             u.setUserRole(UserRoles.fromValue(resultSet.getString(5)));
-            System.out.println(">>>>>>>>>>.Result"+u);
             usersList.add(u);
         }
         return usersList;

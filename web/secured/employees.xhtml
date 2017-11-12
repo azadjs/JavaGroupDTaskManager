@@ -28,8 +28,10 @@
                                     <td>#{emp.userRole}</td>
                                     <td>#{emp.lastLoginDate}</td>
                                     <td>
-                                        <h:commandButton value="Remove" class="btn btn-danger" />
-                                        <h:commandButton value="View Details" class="btn btn-info" />
+                                        <h:form>
+                                            <h:commandButton value="Remove" class="btn btn-danger" />
+                                            <h:commandButton value="View Details" class="btn btn-info" />
+                                        </h:form>
                                     </td>
                                 </tr>
                             </ui:repeat>

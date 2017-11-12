@@ -2,6 +2,7 @@ package org.taskmanager.providers;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -40,7 +41,12 @@ public class TaskFacade implements TaskServices {
     public void createTask(Task task) throws CanNotCreateTaskException {
         try {
             dataHelper.connect();
+            task.setCreated(LocalDateTime.now());
+            task.setStatus(TaskStatuses.NEW);
             dataHelper.insertTask(task);
+            if(task.getResponsibles()==null){
+                task.setResponsibles(new ArrayList<>());
+            }
             dataHelper.insertResponsibleUsers(task);
             dataHelper.commitChanges();
         } catch (SQLException e) {
@@ -145,6 +151,7 @@ public class TaskFacade implements TaskServices {
         try {
             dataHelper.connect();
             authorstasks = dataHelper.getTasksByAuthor(user);
+            
             dataHelper.commitChanges();
         } catch (SQLException e) {
             try {
