@@ -35,3 +35,54 @@ and open the template in the editor.
     font-weight: bold;
     list-style: none;
 }
+
+.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+.row.content {height: 450px}
+.sidenav {
+    padding-top: 20px;
+    background-color: #f1f1f1;
+    height: 100%;
+}
+footer {
+    background-color: #555;
+    color: white;
+    padding: 15px;
+}
+@media screen and (max-width: 767px) {
+    .sidenav {
+        height: auto;
+        padding: 15px;
+    }
+    .row.content {height:auto;} 
+}
+.list-group-item{
+    margin-bottom: 4px;
+}
+.list-group-item a{
+    display: block;
+    text-decoration: none;
+    color: #00BFFF;
+    font-size: 16px;
+    font-family: sans-serif;
+}
+.active-left-menu-item{
+    border: 1px solid #00BFFF !important;
+}
+.search-box{
+    width: 300px!important;
+    margin-left: 100px;
+}
+.modal-backdrop {
+    display:none !important;
+}
+.modal-open .modal {
+    width: 600px !important;
+    margin: 100px auto !important;
+}
+.custom-input{
+    max-width: 300px!important;
+    margin: 4px;
+}

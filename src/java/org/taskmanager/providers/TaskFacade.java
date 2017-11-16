@@ -209,4 +209,25 @@ public class TaskFacade implements TaskServices {
         return task;
     }
 
+    @Override
+    public List<Task> searchTask(String keyword) throws TaskException {
+       List<Task> userstasks = null;
+        try {
+            dataHelper.connect();
+            userstasks = dataHelper.searchByKeyword(keyword);
+            dataHelper.commitChanges();
+        } catch (SQLException e) {
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            e.printStackTrace(System.err);
+            throw new TaskException("Can not get Tasks by keyword : " + keyword);
+        } finally {
+            dataHelper.disconnect();
+        }
+        return userstasks;
+    }
+
 }

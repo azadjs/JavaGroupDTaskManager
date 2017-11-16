@@ -17,67 +17,7 @@
         <script src="../resources/js/jquery.datetimepicker.full.min.js" />
         <link href="../resources/css/jquery.datetimepicker.css" rel="stylesheet"></link>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
-        <script>
-            function openModal() {
-                document.getElementById('modal-trigger').click();
-            }
-            function openCreateTaskModal() {
-                document.getElementById('open-create-task-modal').click();
-            }
-        </script>
-
-        <style>
-            .navbar {
-                margin-bottom: 0;
-                border-radius: 0;
-            }
-            .row.content {height: 450px}
-            .sidenav {
-                padding-top: 20px;
-                background-color: #f1f1f1;
-                height: 100%;
-            }
-            footer {
-                background-color: #555;
-                color: white;
-                padding: 15px;
-            }
-            @media screen and (max-width: 767px) {
-                .sidenav {
-                    height: auto;
-                    padding: 15px;
-                }
-                .row.content {height:auto;} 
-            }
-            .list-group-item{
-                margin-bottom: 4px;
-            }
-            .list-group-item a{
-                display: block;
-                text-decoration: none;
-                color: #00BFFF;
-                font-size: 16px;
-                font-family: sans-serif;
-            }
-            .active-left-menu-item{
-                border: 1px solid #00BFFF !important;
-            }
-            .search-box{
-                width: 300px!important;
-                margin-left: 100px;
-            }
-            .modal-backdrop {
-                display:none !important;
-            }
-            .modal-open .modal {
-                width: 600px !important;
-                margin: 100px auto !important;
-            }
-            .custom-input{
-                max-width: 300px!important;
-                margin: 4px;
-            }
-        </style>
+        <script src="../resources/js/home.js" />
     </h:head>
     <h:body>
         <nav class="navbar navbar-inverse">
@@ -100,8 +40,9 @@
                                 <div class="form-group">
                                     <h:inputText class="form-control search-box"
                                                  pt:placeholder="Search Tasks" onfocus="openModal()"
-                                                 value="#{searchManager.testData}">
-                                        <f:ajax event="keyup" execute="@this" render="search-bar-result" />
+                                                 value="#{searchManager.taskKeyword}">
+                                        <f:ajax event="keyup" execute="@this" 
+                                                render="search-bar-result" listener="#{searchManager.search()}" />
                                     </h:inputText>
                                 </div>
                             </h:form>
@@ -138,19 +79,19 @@
                             </li>
                             <li class="list-group-item #{mc.isActiveMenuElement('MY_TASKS')? 'active-left-menu-item':''}"
                                 style="display: #{security.hasUIPermission('MY_TASKS') ? '' : 'none' }">
-                                <span class="badge">14</span>
+                                <span class="badge">#{taskctrl.myTasks.size()}</span>
                                 <h:commandLink value="My Tasks" 
                                                actionListener="#{mc.navigateMenuElement('MY_TASKS')}"/>
                             </li>
                             <li class="list-group-item #{mc.isActiveMenuElement('ASSIGNED_TASKS')? 'active-left-menu-item':''}"
                                 style="display: #{security.hasUIPermission('ASSIGNED_TASKS') ? '' : 'none' }">
-                                <span class="badge">14</span>
+                                <span class="badge">#{taskctrl.assignedTasks.size()}</span>
                                 <h:commandLink value="Assigned Task" 
                                                actionListener="#{mc.navigateMenuElement('ASSIGNED_TASKS')}"/>
                             </li>
                             <li class="list-group-item #{mc.isActiveMenuElement('MY_EMPLOYEES')? 'active-left-menu-item':''}"
                                 style="display: #{security.hasUIPermission('MY_EMPLOYEES') ? '' : 'none' }">
-                                <span class="badge">14</span>
+                                <span class="badge">#{empctrl.employees.size()}</span>
                                 <h:commandLink value="My Employees" 
                                                actionListener="#{mc.navigateMenuElement('MY_EMPLOYEES')}"/>
                             </li>
@@ -182,7 +123,39 @@
                     </div>
                     <div class="modal-body">
                         <h:panelGroup id="search-bar-result">
-                            Search result ->  #{searchManager.testData}
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td>Title</td>
+                                        <td>Owner</td>
+                                        <td>Created</td>
+                                        <td>Deadline</td>
+                                        <td>Status</td>
+                                        <td>Solved</td>
+                                        <td>Operations</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ui:repeat value="#{searchManager.resultedTask}" var="rtsk">
+                                        <tr>
+                                            <td>#{rtsk.title}</td>
+                                            <td>#{rtsk.owner.fullname}</td>
+                                            <td>#{rtsk.created}</td>
+                                            <td>#{rtsk.deadline}</td>
+                                            <td>#{rtsk.status}</td>
+                                            <td>#{rtsk.solved}</td>
+                                            <td>
+                                                <h:form>
+                                                    <h:commandButton style="margin: 2px" class="btn btn-danger" value="Remove" />
+                                                    <h:commandButton style="margin: 2px" class="btn btn-info" value="View Details" />
+                                                </h:form>
+                                            </td>
+                                        </tr>
+                                    </ui:repeat>
+                                </tbody>
+                            </table>
+
                         </h:panelGroup>
                     </div>
                 </div>

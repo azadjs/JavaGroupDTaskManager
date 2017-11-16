@@ -28,7 +28,11 @@ public interface TaskServices {
     List<Task> getTaskByAuthor(User user) throws TaskException;
 
     List<Task> getTaskByUser(User user) throws TaskException;
+    
+    List<Task> searchTask(String keyword) throws TaskException;
 
     Task getTaskById(Long taskId) throws TaskException;
+    
+    
 
 }

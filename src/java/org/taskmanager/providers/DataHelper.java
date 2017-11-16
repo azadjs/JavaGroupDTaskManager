@@ -283,6 +283,29 @@ public final class DataHelper {
         return usersList;
     }
 
+    public List<Task> searchByKeyword(String keyword) throws SQLException {
+        List<Task> resultedTasks = new ArrayList<>();
+        String query = "SELECT * FROM TASKS WHERE TITLE LIKE ? OR DESCRIPTION LIKE ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, "%" + keyword + "%");
+        preparedStatement.setString(2, "%" + keyword + "%");
+        resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Task t = new Task();
+            t.setId(resultSet.getLong(1));
+            t.setTitle(resultSet.getString(2));
+            t.setDescription(resultSet.getString(3));
+            t.setOwner(new User(resultSet.getLong(4)));
+            t.setCreated(resultSet.getTimestamp(5).toLocalDateTime());
+            t.setDeadline(resultSet.getTimestamp(6).toLocalDateTime());
+            t.setStatus(TaskStatuses.fromValue(resultSet.getString(7)));
+            t.setSolved(resultSet.getTimestamp(8) != null ? resultSet.getTimestamp(8).toLocalDateTime() : null);
+            t.setAssigned(resultSet.getTimestamp(9) != null ? resultSet.getTimestamp(9).toLocalDateTime() : null);
+            resultedTasks.add(t);
+        }
+        return resultedTasks;
+    }
+
     private Date convertFrom(LocalDateTime ldt) {
         return new Date(java.util.Date.from(ldt.atZone(ZoneId.systemDefault())
                 .toInstant()).getTime());

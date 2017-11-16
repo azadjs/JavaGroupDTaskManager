@@ -1,8 +1,15 @@
 package org.taskmanager.managedbeans;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import org.taskmanager.entities.Task;
+import org.taskmanager.providers.TaskFacade;
+import org.taskmanager.providers.exceptions.TaskException;
+import org.taskmanager.services.TaskServices;
 
 /**
  *
@@ -12,14 +19,50 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public class SearchManager implements Serializable {
 
-    private String testData;
+    private TaskServices taskService;
 
-    public String getTestData() {
-        return testData;
+    private String taskKeyword;
+
+    List<Task> resultedTask;
+
+    @PostConstruct
+    public void init() {
+        resultedTask = new ArrayList<>();
+        try {
+            taskService = new TaskFacade();
+        } catch (TaskException e) {
+            e.printStackTrace(System.err);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
     }
 
-    public void setTestData(String testData) {
-        this.testData = testData;
+    public void search() {
+        try {
+            if (taskKeyword == null || taskKeyword.isEmpty()) {
+                resultedTask.clear();
+            } else {
+                resultedTask = taskService.searchTask(taskKeyword);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+    }
+
+    public String getTaskKeyword() {
+        return taskKeyword;
+    }
+
+    public void setTaskKeyword(String taskKeyword) {
+        this.taskKeyword = taskKeyword;
+    }
+
+    public List<Task> getResultedTask() {
+        return resultedTask;
+    }
+
+    public void setResultedTask(List<Task> resultedTask) {
+        this.resultedTask = resultedTask;
     }
 
 }
