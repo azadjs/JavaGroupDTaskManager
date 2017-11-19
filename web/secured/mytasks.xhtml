@@ -33,7 +33,8 @@
                                     <td>#{tsk.solved}</td>
                                     <td>
                                         <h:form>
-                                            <h:commandButton style="margin: 2px" class="btn btn-danger" value="Remove" />
+                                            <h:commandButton style="margin: 2px" class="btn btn-danger" value="Remove"
+                                                             actionListener="#{taskctrl.removeTask(tsk)}"/>
                                             <h:commandButton style="margin: 2px" class="btn btn-info" value="View Details" />
                                         </h:form>
                                     </td>

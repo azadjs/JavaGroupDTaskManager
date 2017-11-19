@@ -2,6 +2,7 @@ package org.taskmanager.entities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.taskmanager.entities.util.TaskStatuses;
 
@@ -24,13 +25,12 @@ public class Task {
     private List<Comment> comments;
 
     public Task(String string) {
-        
+
     }
 
     public Task() {
-        
-    }
 
+    }
 
     public Long getId() {
         return id;
@@ -113,6 +113,9 @@ public class Task {
     }
 
     public List<Comment> getComments() {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
         return comments;
     }
 
@@ -122,13 +125,11 @@ public class Task {
 
     @Override
     public String toString() {
-        return "\nTask{" + "id=" + id + ", title=" + title + 
-                ", description=" + description + ", owner=" + owner + 
-                ", created=" + created + ", deadline=" + deadline + ", status=" +
-                status + ", solved=" + solved + ", assigned=" + assigned + 
-                ", responsibles=" + responsibles + ", comments=" + comments + '}'+"\n";
+        return "\nTask{" + "id=" + id + ", title=" + title
+                + ", description=" + description + ", owner=" + owner
+                + ", created=" + created + ", deadline=" + deadline + ", status="
+                + status + ", solved=" + solved + ", assigned=" + assigned
+                + ", responsibles=" + responsibles + ", comments=" + comments + '}' + "\n";
     }
 
-    
-    
 }

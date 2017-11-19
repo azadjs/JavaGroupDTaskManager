@@ -2,6 +2,8 @@ package org.taskmanager.providers;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -40,7 +42,7 @@ public class UserFacade implements UserServices {
             dataHelper.connect();
             user = dataHelper.login(username, password);
             dataHelper.commitChanges();
-            if(user == null){
+            if (user == null) {
                 throw new UserAuthenticationException();
             }
         } catch (SQLException e) {
@@ -96,7 +98,7 @@ public class UserFacade implements UserServices {
         } finally {
             dataHelper.disconnect();
         }
-        System.out.println("Facade data "+user);
+        System.out.println("Facade data " + user);
         return user;
     }
 
@@ -134,6 +136,33 @@ public class UserFacade implements UserServices {
             }
             e.printStackTrace(System.err);
             throw new CommentException("Can not add comment " + user + task);
+        } finally {
+            dataHelper.disconnect();
+        }
+    }
+
+    @Override
+    public void remove(Long id) throws UserException {
+        try {
+            dataHelper.connect();
+            dataHelper.removeUser(id);
+            dataHelper.commitChanges();
+        } catch (SQLException e) {
+            e.printStackTrace(System.err);
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            throw new UserException("Can not remove User id = " + id);
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            try {
+                dataHelper.rollbackChanges();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+            throw new UserException("Can not remove User id = " + id);
         } finally {
             dataHelper.disconnect();
         }

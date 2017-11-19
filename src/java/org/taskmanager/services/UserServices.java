@@ -22,4 +22,6 @@ public interface UserServices {
     List<User> getUsersByManager(User manager) throws UserException;
 
     void register(User user) throws UserException;
+    
+    void remove(Long id) throws UserException;
 }

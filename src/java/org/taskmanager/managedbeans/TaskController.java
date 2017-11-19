@@ -75,13 +75,20 @@ public class TaskController implements Serializable {
         try {
             task.setOwner(loginController.getCurrentUser());
             task.setDeadline(deadline.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>"+task.getDeadline());
             taskFacade.createTask(task);
             messageController.showMessage("Task successfully created", FacesMessage.SEVERITY_INFO);
         } catch (CanNotCreateTaskException ex) {
             ex.printStackTrace(System.err);
             messageController.showMessage("Something went wrong \n" + ex.getMessage(), FacesMessage.SEVERITY_ERROR);
         } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+    }
+    
+    public void removeTask(Task task){
+        try {
+            taskFacade.removeTask(task);
+        } catch (TaskException e) {
             e.printStackTrace(System.err);
         }
     }

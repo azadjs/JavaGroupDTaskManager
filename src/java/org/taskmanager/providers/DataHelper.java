@@ -129,7 +129,7 @@ public final class DataHelper {
     }
 
     public void removeTask(Task task) throws SQLException {
-        String query = "DELETE FROM task WHERE id = ? ";
+        String query = "DELETE FROM TASKS WHERE id = ? ";
         preparedStatement = connection.prepareStatement(query);
         preparedStatement.setLong(1, task.getId());
         preparedStatement.execute();
@@ -304,6 +304,13 @@ public final class DataHelper {
             resultedTasks.add(t);
         }
         return resultedTasks;
+    }
+
+    public void removeUser(Long id) throws SQLException {
+        String query = "DELETE FROM USERS WHERE ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, id);
+        preparedStatement.execute();
     }
 
     private Date convertFrom(LocalDateTime ldt) {

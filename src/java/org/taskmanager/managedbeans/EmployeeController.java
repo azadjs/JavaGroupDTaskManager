@@ -45,6 +45,14 @@ public class EmployeeController {
         return new ArrayList<>();
     }
 
+    public void removeEmployee(Long id) {
+        try {
+            userService.remove(id);
+        } catch (UserException e) {
+            e.printStackTrace(System.err);
+        }
+    }
+
     public LoginController getLoginController() {
         return loginController;
     }
