@@ -1,5 +1,6 @@
 package org.taskmanager.providers;
 
+import java.security.acl.Owner;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -15,6 +16,9 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.taskmanager.entities.Comment;
 import org.taskmanager.entities.Task;
+import org.taskmanager.entities.Notification;
+import org.taskmanager.entities.Notification.NotificationTypes;
+import org.taskmanager.entities.Notification.Status;
 import org.taskmanager.entities.User;
 import org.taskmanager.entities.util.TaskStatuses;
 import org.taskmanager.entities.util.UserRoles;
@@ -310,6 +314,116 @@ public final class DataHelper {
         String query = "DELETE FROM USERS WHERE ID = ? ";
         preparedStatement = connection.prepareStatement(query);
         preparedStatement.setLong(1, id);
+        preparedStatement.execute();
+    }
+    
+    public Notification findById(Long id) throws SQLException{
+       String query = "SELECT * FROM NOTIFICATIONS WHERE ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, id);
+        resultSet = preparedStatement.executeQuery();
+        Notification n = null;
+        if (resultSet.next()) {
+            n = new Notification();
+            n.setId(resultSet.getLong(1));
+            n.setOwner(new User(resultSet.getLong(2)));
+            n.setNotificationText(resultSet.getString(3));
+            n.setCreated(resultSet.getTimestamp(4).toLocalDateTime());
+            n.setTask(new Task(resultSet.getLong(5)));
+            n.setTarget(new User(resultSet.getLong(6)));
+            n.setNotificationType(NotificationTypes.fromValue(resultSet.getString(7)));
+            n.setStatus(Status.fromValue(resultSet.getString(8)));
+        }
+        return n;
+    }
+    
+    public List<Notification> findAll() throws SQLException{
+        List<Notification> notifications = new ArrayList<>();
+        String query = "SELECT * FROM NOTIFICATIONS ";
+        preparedStatement = connection.prepareStatement(query);
+        resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()){
+          Notification n = new Notification();
+            n.setId(resultSet.getLong(1)); 
+            n.setOwner(new User(resultSet.getLong(2)));
+            n.setNotificationText(resultSet.getString(3));
+            n.setCreated(resultSet.getTimestamp(4).toLocalDateTime());
+            n.setTask(new Task(resultSet.getLong(5)));
+            n.setTarget(new User(resultSet.getLong(6)));
+            n.setNotificationType(NotificationTypes.fromValue(resultSet.getString(7)));
+            n.setStatus(Status.fromValue(resultSet.getString(8)));
+            notifications.add(n);
+        }
+        return notifications;
+    }
+    
+    public List<Notification> findAll(User user) throws SQLException{
+        List<Notification> allUsers = new ArrayList<>();
+        String query = "SELECT * FROM NOTIFICATIONS WHERE USER_ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, user.getId());
+        resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Notification n = new Notification();
+            n.setId(resultSet.getLong(1));
+            n.setOwner(new User(resultSet.getLong(2)));
+            n.setNotificationText(resultSet.getString(3));
+             n.setCreated(resultSet.getTimestamp(4).toLocalDateTime());
+            n.setTask(new Task(resultSet.getLong(5)));
+            n.setTarget(new User(resultSet.getLong(6)));
+            n.setNotificationType(NotificationTypes.fromValue(resultSet.getString(7)));
+            n.setStatus(Status.fromValue(resultSet.getString(8)));
+            allUsers.add(n);
+        }
+        return allUsers;
+    }
+    
+    public List<Notification> findAll(Task task) throws SQLException{
+       List<Notification> allTasks = new ArrayList<>();
+        String query = "SELECT * FROM NOTIFICATIONS WHERE TASK_ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, task.getId());
+        resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Notification n = new Notification();
+            n.setId(resultSet.getLong(1));
+            n.setOwner(new User(resultSet.getLong(2)));
+            n.setNotificationText(resultSet.getString(3));
+            n.setCreated(resultSet.getTimestamp(4).toLocalDateTime());
+            n.setTask(new Task(resultSet.getLong(5)));
+            n.setTarget(new User(resultSet.getLong(6)));
+            n.setNotificationType(NotificationTypes.fromValue(resultSet.getString(7)));
+            n.setStatus(Status.fromValue(resultSet.getString(8)));
+            allTasks.add(n);
+        }
+        return allTasks;
+    }
+    
+    public void merge(Notification notification){
+        
+        
+    }
+    
+    public void remove(Long id) throws SQLException{
+        String query = "DELETE FROM NOTIFICATIONS WHERE ID = ? ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, id);
+        preparedStatement.execute();
+    }
+    
+    public void add(Notification notification) throws SQLException{
+        String query = "INSERT INTO NOTIFICATIONS "
+                + "(USER_ID,NOTIFICATIONTEXT,CREATED,TASK_ID,USER_TARGET,NOTIFICATIONTYPE,STATUS) "
+                + " VALUES "
+                + "(?,?,?,?,?,?,?) ";
+        preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setLong(1, notification.getOwner().getId());
+        preparedStatement.setString(2, notification.getNotificationText());
+        preparedStatement.setTimestamp(3, new Timestamp(convertFrom(notification.getCreated()).getTime()));
+        preparedStatement.setLong(4, notification.getTask().getId() );
+        preparedStatement.setLong(5, notification.getTarget().getId() );
+        preparedStatement.setString(6, notification.getNotificationType().getRole());
+        preparedStatement.setString(7,notification.getStatus().getRole());
         preparedStatement.execute();
     }
 

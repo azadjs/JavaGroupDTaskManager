@@ -11,7 +11,7 @@ import org.taskmanager.entities.User;
  */
 public interface NotificationService {
 
-    public Notification findById();
+    public Notification findById(Long id);
 
     public List<Notification> findAll();
 
